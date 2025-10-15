@@ -1,0 +1,7 @@
+__pycache__/
+node_modules/
+.env
+backend/meetings.db
+backend/storage/
+dist/
+.vscode/

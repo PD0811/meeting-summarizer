@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import shutil
 from pathlib import Path
 import aiofiles
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from .db import Base, engine, SessionLocal
 from . import models, schemas
@@ -22,6 +24,15 @@ ensure_storage_dir(STORAGE_DIR)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Meeting Summarizer API")
+
+# Allow frontend (Vite) to talk to backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # for dev, allow all; later restrict to "http://127.0.0.1:5173"
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
@@ -52,7 +63,10 @@ async def upload_meeting_audio(
 
     # Transcribe (blocking CPU / network call) - you may want to run this in background for large audio
     try:
+        print(">>> Starting transcription...")
         transcript = transcribe_file(str(out_path))
+        print(">>> Transcription complete!")
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Transcription error: {e}")
 

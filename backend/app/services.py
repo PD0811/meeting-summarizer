@@ -45,7 +45,7 @@ def summarize_transcript(transcript: str) -> Tuple[str, str]:
     )
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant specialized in meeting summaries."},
             {"role": "user", "content": prompt}
